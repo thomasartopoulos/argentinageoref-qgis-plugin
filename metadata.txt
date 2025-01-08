@@ -1,0 +1,11 @@
+[general]
+name=argentina_georef
+description=Obtiene información administrativa de Argentina a partir de coordenadas
+about=Este plugin utiliza la API de georeferenciación de datos.gob.ar para obtener información administrativa (provincia, departamento, municipio) a partir de coordenadas geográficas.
+version=1.0
+qgisMinimumVersion=3.0
+author=Thomas Artopoulos
+email=thomas.artopoulos@gmail.com
+tracker=https://github.com/thomasartopoulos/argentinageoref-qgis-plugin
+repository=https://github.com/thomasartopoulos/argentinageoref-qgis-plugin
+homepage=https://github.com/thomasartopoulos/argentinageoref-qgis-plugin

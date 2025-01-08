@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+<class>GeorefDialogBase</class>
+<widget class="QDialog" name="GeorefDialogBase">
+  <property name="windowIcon">
+    <iconset>
+      <normaloff>icon.png</normaloff>
+    </iconset>
+  </property>
+ <property name="geometry">
+  <rect>
+   <x>0</x>
+   <y>0</y>
+   <width>500</width>
+   <height>800</height>
+  </rect>
+ </property>
+ <property name="windowTitle">
+  <string>Georeferenciación Argentina</string>
+ </property>
+ <layout class="QVBoxLayout" name="verticalLayout">
+  <!-- Layer Selection -->
+  <item>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="title">
+     <string>Selección de Capa</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QComboBox" name="layer_combo"/>
+     </item>
+    </layout>
+   </widget>
+  </item>
+
+  <!-- Output Type -->
+  <item>
+   <widget class="QGroupBox" name="output_group">
+    <property name="title">
+     <string>Tipo de Salida</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_output">
+     <item>
+      <widget class="QRadioButton" name="radio_temp">
+       <property name="text">
+        <string>Capa Temporal</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radio_permanent">
+       <property name="text">
+        <string>Capa Permanente</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="txt_output_path">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="placeholderText">
+          <string>Ruta de guardado...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_browse">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Examinar</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </item>
+
+  <!-- Coordinates Section -->
+  <item>
+   <widget class="QGroupBox" name="coords_group">
+    <property name="title">
+     <string>Coordenadas</string>
+    </property>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Latitud:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QComboBox" name="combo_lat"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Longitud:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="combo_lon"/>
+     </item>
+    </layout>
+   </widget>
+  </item>
+
+  <!-- Overwrite Option -->
+  <item>
+   <widget class="QCheckBox" name="chk_overwrite">
+    <property name="text">
+     <string>Sobrescribir campos existentes</string>
+    </property>
+    <property name="toolTip">
+     <string>Si se marca, se sobrescribirán los campos existentes con el mismo nombre</string>
+    </property>
+   </widget>
+  </item>
+
+  <!-- Output Fields Section -->
+  <item>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="title">
+     <string>Nombres de Campos de Salida</string>
+    </property>
+    <layout class="QFormLayout" name="formLayout_2">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Provincia:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="txt_prov_name">
+       <property name="placeholderText">
+        <string>Dejar vacío para omitir</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>ID Provincia:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="txt_prov_id">
+       <property name="placeholderText">
+        <string>Dejar vacío para omitir</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Departamento:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="txt_depto_name">
+       <property name="placeholderText">
+        <string>Dejar vacío para omitir</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>ID Departamento:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="txt_depto_id">
+       <property name="placeholderText">
+        <string>Dejar vacío para omitir</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_7">
+       <property name="text">
+        <string>Municipio:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QLineEdit" name="txt_muni_name">
+       <property name="placeholderText">
+        <string>Dejar vacío para omitir</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_8">
+       <property name="text">
+        <string>ID Municipio:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QLineEdit" name="txt_muni_id">
+       <property name="placeholderText">
+        <string>Dejar vacío para omitir</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </item>
+
+  <!-- Progress Section -->
+  <item>
+   <widget class="QGroupBox" name="progress_group">
+    <property name="title">
+     <string>Progreso</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QProgressBar" name="progress_bar">
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="status_label">
+       <property name="text">
+        <string>Listo para procesar</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </item>
+
+  <!-- Buttons Section -->
+  <item>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="btn_reset">
+      <property name="text">
+       <string>Restablecer</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btn_process">
+      <property name="text">
+       <string>Procesar</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QDialogButtonBox" name="button_box">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Close</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </item>
+ </layout>
+</widget>
+<resources/>
+<connections>
+ <connection>
+  <sender>button_box</sender>
+  <signal>rejected()</signal>
+  <receiver>GeorefDialogBase</receiver>
+  <slot>reject()</slot>
+ </connection>
+</connections>
+</ui>
