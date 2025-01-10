@@ -3,7 +3,7 @@ import os
 from qgis.PyQt import QtGui, QtWidgets, uic
 from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QFileDialog
 from qgis.PyQt.QtCore import Qt, QObject
-from qgis.PyQt.QtGui import QIcon  
+from qgis.PyQt.QtGui import QIcon
 from qgis.core import QgsProject, QgsMapLayer, QgsMessageLog
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
@@ -15,11 +15,11 @@ class GeorefDialog(QDialog, FORM_CLASS):
         self.iface = iface
         self.setupUi(self)
         self.plugin_instance = None
-
+        
         # Establecer el ícono de la ventana
         icon_path = os.path.join(os.path.dirname(__file__), 'icon.png')
         self.setWindowIcon(QIcon(icon_path))
-            
+        
         try:
             # Inicializar componentes
             self.setup_layer_selector()
@@ -41,7 +41,7 @@ class GeorefDialog(QDialog, FORM_CLASS):
         except Exception as e:
             QgsMessageLog.logMessage(
                 f"Error en inicialización del diálogo: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=2
             )
             raise
@@ -75,11 +75,19 @@ class GeorefDialog(QDialog, FORM_CLASS):
         self.combo_lat.addItem("Usar geometría", None)
         self.combo_lon.addItem("Usar geometría", None)
         
-        # Agregar campos numéricos
+        # Agregar campos numéricos - usamos el nombre del campo tanto para display como para data
         for field in layer.fields():
             if field.isNumeric():
-                self.combo_lat.addItem(field.name(), field.name())
-                self.combo_lon.addItem(field.name(), field.name())
+                field_name = field.name()
+                self.combo_lat.addItem(field_name, field_name)  # Mismo valor para display y data
+                self.combo_lon.addItem(field_name, field_name)  # Mismo valor para display y data
+
+        # Debug: Imprimir valores actuales
+        QgsMessageLog.logMessage(
+            f"Campos disponibles: {[field.name() for field in layer.fields() if field.isNumeric()]}",
+            'Argentina Georref',
+            level=0
+        )
 
     def on_output_type_changed(self, checked):
         self.txt_output_path.setEnabled(checked)
@@ -122,25 +130,34 @@ class GeorefDialog(QDialog, FORM_CLASS):
                 if value:  # Si el nombre no está vacío
                     fields[key] = value
             
+            lat_field = self.combo_lat.currentData()
+            lon_field = self.combo_lon.currentData()
+
+            QgsMessageLog.logMessage(
+                f"Campos seleccionados en UI - lat: {lat_field}, lon: {lon_field}",
+                'Argentina Georref',
+                level=0
+            )
+        
             config = {
                 'layer': self.get_selected_layer(),
                 'fields': fields,
                 'overwrite': self.chk_overwrite.isChecked(),
                 'coords': {
-                    'lat': self.combo_lat.currentData(),
-                    'lon': self.combo_lon.currentData()
+                    'lat': lat_field,
+                    'lon': lon_field
                 },
                 'output': {
                     'temporary': self.radio_temp.isChecked(),
                     'path': self.txt_output_path.text() if not self.radio_temp.isChecked() else None
                 }
             }
-            
+                
             return config
         except Exception as e:
             QgsMessageLog.logMessage(
                 f"Error al obtener configuración: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=2
             )
             return None
@@ -186,7 +203,7 @@ class GeorefDialog(QDialog, FORM_CLASS):
         except Exception as e:
             QgsMessageLog.logMessage(
                 f"Error en validación: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=2
             )
             return False, f"Error en validación: {str(e)}"
@@ -203,7 +220,7 @@ class GeorefDialog(QDialog, FORM_CLASS):
         except Exception as e:
             QgsMessageLog.logMessage(
                 f"Error actualizando progreso: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=2
             )
     
@@ -248,7 +265,7 @@ class GeorefDialog(QDialog, FORM_CLASS):
         except Exception as e:
             QgsMessageLog.logMessage(
                 f"Error en procesamiento: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=2
             )
             QMessageBox.critical(

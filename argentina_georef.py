@@ -14,11 +14,15 @@ class ArgentinaGeoref:
         self.iface = iface
         self.plugin_dir = os.path.dirname(__file__)
         self.actions = []
-        self.menu = 'Argentina Georef'
+        self.menu = 'Argentina Georref'
         self.toolbar = self.iface.addToolBar(u'ArgentinaGeoref')
         self.toolbar.setObjectName(u'ArgentinaGeoref')
         self.first_start = True
         self.dlg = None
+        
+        # Configurar el icono de la ventana principal
+        icon_path = os.path.join(self.plugin_dir, 'icon.png')
+        self.iface.mainWindow().setWindowIcon(QIcon(icon_path))
 
     def add_action(self, icon_path, text, callback):
         icon = QIcon(icon_path)
@@ -86,17 +90,63 @@ class ArgentinaGeoref:
 
         return field_indices
 
-    def get_coordinates(self, feature):
-        if feature.hasGeometry():
-            point = feature.geometry().asPoint()
-            return point.y(), point.x()
-        return None, None
+    def get_coordinates(self, feature, config):
+        """Obtiene las coordenadas del feature según la configuración"""
+        try:
+            # Debug: Imprimir valores recibidos
+            lat_field = config['coords']['lat']
+            lon_field = config['coords']['lon']
+            
+            QgsMessageLog.logMessage(
+                f"Intentando obtener coordenadas - Campos seleccionados: lat='{lat_field}', lon='{lon_field}'",
+                'Argentina Georref',
+                level=0
+            )
+
+            # Si se seleccionaron campos específicos (diferentes a None o "Usar geometría")
+            if lat_field and lon_field and lat_field != "None" and lon_field != "None":
+                try:
+                    # Debug: Imprimir valores antes de la conversión
+                    lat_value = feature[lat_field]
+                    lon_value = feature[lon_field]
+                    QgsMessageLog.logMessage(
+                        f"Valores encontrados en campos: lat={lat_value}, lon={lon_value}",
+                        'Argentina Georref',
+                        level=0
+                    )
+                    
+                    lat = float(lat_value)
+                    lon = float(lon_value)
+                    return lat, lon
+                    
+                except (ValueError, KeyError) as e:
+                    QgsMessageLog.logMessage(
+                        f"Error al obtener coordenadas de campos: {str(e)}",
+                        'Argentina Georref',
+                        level=1
+                    )
+                    return None, None
+            
+            # Si no hay campos seleccionados o son "Usar geometría", usar geometría
+            if feature.hasGeometry():
+                point = feature.geometry().asPoint()
+                return point.y(), point.x()
+            
+            return None, None
+            
+        except Exception as e:
+            QgsMessageLog.logMessage(
+                f"Error al obtener coordenadas: {str(e)}",
+                'Argentina Georref',
+                level=1
+            )
+            return None, None
 
     def reverse_geocode(self, lat, lon):
         try:
             QgsMessageLog.logMessage(
                 f"Consultando API con lat={lat}, lon={lon}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=0)
                 
             response = requests.get(
@@ -115,14 +165,14 @@ class ArgentinaGeoref:
             else:
                 QgsMessageLog.logMessage(
                     f"Error en API: {response.status_code}",
-                    'Argentina Georef',
+                    'Argentina Georref',
                     level=1)
                 return {}
                 
         except requests.exceptions.RequestException as e:
             QgsMessageLog.logMessage(
                 f"Error de conexión: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=1)
             return {}
 
@@ -188,7 +238,7 @@ class ArgentinaGeoref:
 
             for feature in working_layer.getFeatures():
                 try:
-                    lat, lon = self.get_coordinates(feature)
+                    lat, lon = self.get_coordinates(feature, config)
                     if lat is None or lon is None:
                         errors += 1
                         continue
@@ -220,7 +270,7 @@ class ArgentinaGeoref:
                 except Exception as e:
                     QgsMessageLog.logMessage(
                         f"Error procesando feature {feature.id()}: {str(e)}",
-                        'Argentina Georef',
+                        'Argentina Georref',
                         level=1)
                     errors += 1
                     continue
@@ -249,7 +299,7 @@ class ArgentinaGeoref:
         except Exception as e:
             QgsMessageLog.logMessage(
                 f"Error general: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=2)
             if 'working_layer' in locals() and working_layer.isEditable():
                 working_layer.rollBack()
@@ -267,7 +317,7 @@ class ArgentinaGeoref:
         except Exception as e:
             QgsMessageLog.logMessage(
                 f"Error al iniciar el plugin: {str(e)}",
-                'Argentina Georef',
+                'Argentina Georref',
                 level=2
             )
             QMessageBox.critical(
